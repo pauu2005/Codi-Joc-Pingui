@@ -36,12 +36,10 @@ public class bbdd {
 		} else {
 			URL = "jdbc:oracle:thin:@//oracle.ilerna.com:1521/XEPDB2";
 		}
+	
+		String USER = DM2425_PER_DEREK
 		
-		System.out.println("¿Usuario?");
-		String USER = scan.nextLine();
-		
-		System.out.println("¿Contraseña?");
-		String PWD = scan.nextLine();
+		String PWD = DER123456
 		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
