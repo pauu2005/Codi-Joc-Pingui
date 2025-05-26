@@ -26,7 +26,9 @@ public class pantallaPrincipalController {
     @FXML private Button registerButton;
 
     @FXML
+      public Connection conexion = null;
     private void initialize() {
+        conexion = bbdd.conectarBaseDatos(); 
         // This method is called automatically after the FXML is loaded
         // You can set initial values or add listeners here
         System.out.println("pantallaPrincipalController initialized");
