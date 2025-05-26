@@ -71,7 +71,9 @@ public class pantallaJuegoController {
     private static final int MAX_BOLAS = 6;
 
     @FXML
+    public Connection conexion = null;
     private void initialize() {
+        conexion = bbdd.conectarBaseDatos(); 
         generarCasillasEspeciales();
         eventos.setText("¡El juego ha comenzado! Turno de: " + getColorJugador(jugadorActual));
         for (int i = 0; i < NUM_JUGADORES; i++) {
