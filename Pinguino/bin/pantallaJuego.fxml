@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -76,22 +77,22 @@
                         <Font size="30.0" />
                       </font>
                     </Text>
-                    <Button fx:id="rapido" mnemonicParsing="false" text="Usar" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="90.0">
+                    <Button fx:id="rapido" mnemonicParsing="false" text="Usar" onAction="#handleRapido" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="90.0">
                       <font>
                         <Font size="30.0" />
                       </font>
                     </Button>
-                    <Button fx:id="lento" layoutX="65.0" layoutY="100.0" mnemonicParsing="false" text="Usar" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="90.0">
+                    <Button fx:id="lento" layoutX="65.0" layoutY="100.0" mnemonicParsing="false" text="Usar" onAction="#handleLento" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="90.0">
                       <font>
                         <Font size="30.0" />
                       </font>
                     </Button>
-                    <Button fx:id="peces" layoutX="75.0" layoutY="110.0" mnemonicParsing="false" text="Usar" AnchorPane.leftAnchor="505.0" AnchorPane.topAnchor="90.0">
+                    <Button fx:id="peces" layoutX="75.0" layoutY="110.0" mnemonicParsing="false" text="Usar" onAction="#handlePeces" AnchorPane.leftAnchor="505.0" AnchorPane.topAnchor="90.0">
                       <font>
                         <Font size="30.0" />
                       </font>
                     </Button>
-                    <Button fx:id="nieve" layoutX="85.0" layoutY="120.0" mnemonicParsing="false" text="Usar" AnchorPane.leftAnchor="810.0" AnchorPane.topAnchor="90.0">
+                    <Button fx:id="nieve" layoutX="85.0" layoutY="120.0" mnemonicParsing="false" text="Usar" onAction="#handleNieve" AnchorPane.leftAnchor="810.0" AnchorPane.topAnchor="90.0">
                       <font>
                         <Font size="30.0" />
                       </font>
@@ -171,6 +172,12 @@
                 <Insets left="120.0" />
               </GridPane.margin>
             </Circle>
+            <!-- Auto (gris) -->
+            <Rectangle fx:id="Auto" width="30.0" height="30.0" fill="GRAY" stroke="BLACK" strokeType="INSIDE">
+              <GridPane.margin>
+                <Insets left="160.0" />
+              </GridPane.margin>
+            </Rectangle>
             <!-- Hoyos (negro) -->
             <Circle fx:id="hoyo1" fill="BLACK" radius="12.0" stroke="GRAY" strokeType="INSIDE" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
             <Circle fx:id="hoyo2" fill="BLACK" radius="12.0" stroke="GRAY" strokeType="INSIDE" GridPane.rowIndex="5" GridPane.columnIndex="3"/>

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 public class Oso extends Casilla {
 
-	public Oso(int posicion, ArrayList<Jugador> jugadoresActuales) {
+	private ArrayList<Integer> posicionesHoyos;
+
+	public Oso(int posicion, ArrayList<Jugador> jugadoresActuales, ArrayList<Integer> posicionesHoyos) {
 		super(posicion, jugadoresActuales);
+		this.posicionesHoyos = posicionesHoyos;
 	}
 
 	@Override
@@ -23,6 +26,12 @@ public class Oso extends Casilla {
 		}
 
 		jugador.setPosicion(agujeroAnterior);
+	}
+
+	@Override
+	public void realizarAccion() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'realizarAccion'");
 	}
 
 }

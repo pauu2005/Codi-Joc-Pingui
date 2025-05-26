@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import modelo.Inventario;
 import modelo.Item;
@@ -43,12 +44,13 @@ public class pantallaJuegoController {
     @FXML private Circle P2;
     @FXML private Circle P3;
     @FXML private Circle P4;
+    @FXML private Rectangle Auto;
 
     // Variables de juego
     private final int COLUMNS = 5;
-    private final int NUM_JUGADORES = 4;
-    private int[] posiciones = {0, 0, 0, 0}; // P1, P2, P3, P4
-    private int jugadorActual = 0; // 0 = P1, 1 = P2, 2 = P3, 3 = P4
+    private final int NUM_JUGADORES = 5; // 4 humanos + 1 automático
+    private int[] posiciones = {0, 0, 0, 0, 0}; // Añade espacio para el automático
+    private int jugadorActual = 0;
 
     private final int TOTAL_CASILLAS = 50;
     private final int MAX_ESPECIALES = 4;
@@ -61,7 +63,7 @@ public class pantallaJuegoController {
     private int casillaEventoEspecial = -1;
 
     // --- Inventario de cada jugador ---
-    private modelo.Inventario[] inventarios = new modelo.Inventario[NUM_JUGADORES];
+    private modelo.Inventario[] inventarios = new modelo.Inventario[5]; // 4 humanos + 1 automático
 
     // Límites máximos
     private static final int MAX_DADOS = 3;
@@ -78,12 +80,15 @@ public class pantallaJuegoController {
         }
         // ...en initialize() y donde reinicies inventario...
         for (int i = 0; i < NUM_JUGADORES; i++) {
-            ArrayList<Item> items = new ArrayList<>();
-            items.add(new Item("dado_rapido", 1));
-            items.add(new Item("dado_lento", 1));
-            items.add(new Item("pez", 1));
-            items.add(new Item("bola", 1));
-            inventarios[i] = new Inventario(items);
+            if (i < 4) { // Solo los 4 humanos tienen inventario
+                ArrayList<Item> items = new ArrayList<>();
+                items.add(new Item("dado_rapido", 1));
+                items.add(new Item("dado_lento", 1));
+                items.add(new Item("pez", 1));
+                items.add(new Item("bola", 1));
+                inventarios[i] = new Inventario(items);
+            }
+        // inventarios[4] (el automático) quedará null, ¡y no pasa nada!
         }
         mostrarInterroganteEnCasillaEvento();
         dibujarCasillasEspeciales();
@@ -119,7 +124,6 @@ public class pantallaJuegoController {
         items.add(new Item("bola", 1)); // Empieza con 1 bola de nieve
         inventarios[i] = new Inventario(items);
     }
-
 
     }
 
@@ -170,7 +174,12 @@ public class pantallaJuegoController {
         for (int i = 0; i < NUM_JUGADORES; i++) {
             posiciones[i] = 0;
             moverFichaVisual(i, 0);
-            inventarios[i].clear();
+            ArrayList<Item> items = new ArrayList<>();
+            items.add(new Item("dado_rapido", 1));
+            items.add(new Item("dado_lento", 1));
+            items.add(new Item("pez", 1));
+            items.add(new Item("bola", 1));
+            inventarios[i] = new Inventario(items);
         }
         jugadorActual = 0;
         eventos.setText("¡Nuevo juego! Turno de: " + getColorJugador(jugadorActual));
@@ -271,9 +280,18 @@ public class pantallaJuegoController {
         Random rand = new Random();
         int diceResult = rand.nextInt(6) + 1;
         dadoResultText.setText("Ha salido: " + diceResult);
-        moverJugadorActual(diceResult);
-        jugadorActual = (jugadorActual + 1) % NUM_JUGADORES;
-        eventos.setText("Turno de: " + getColorJugador(jugadorActual));
+
+        if (jugadorActual < 4) {
+            moverJugadorActual(diceResult);
+            jugadorActual++;
+            if (jugadorActual == 4) {
+                jugarAutomatico();
+                jugadorActual = 0;
+                eventos.setText(eventos.getText() + "\nTurno de: " + getColorJugador(jugadorActual));
+            } else {
+                eventos.setText("Turno de: " + getColorJugador(jugadorActual));
+            }
+        }
     }
 
     private void moverJugadorActual(int steps) {
@@ -329,7 +347,7 @@ public class pantallaJuegoController {
     private void moverFichaVisual(int idx, int posicion) {
         int row = posicion / COLUMNS;
         int col = posicion % COLUMNS;
-        Circle ficha = getCircleByJugador(idx);
+        javafx.scene.Node ficha = getFichaByJugador(idx);
         GridPane.setRowIndex(ficha, row);
         GridPane.setColumnIndex(ficha, col);
     }
@@ -560,6 +578,44 @@ public class pantallaJuegoController {
                 actualizarInventarioVista(i);
                 break; // Solo una pelea por turno
             }
+        }
+    }
+
+    private void jugarFoca() {
+        Random rand = new Random();
+        int avance = rand.nextInt(6) + 1; // 1 a 6
+        posiciones[4] += avance;
+        if (posiciones[4] >= 50) posiciones[4] = 49;
+        moverFichaVisual(4, posiciones[4]);
+        eventos.setText(eventos.getText() + "\nLa foca avanza " + avance + " casillas.");
+
+        // Puedes añadir aquí efectos especiales si la foca cae en hoyo, trineo, etc.
+        if (esHoyo(posiciones[4])) {
+            posiciones[4] = buscarAgujeroAnterior(posiciones[4]);
+            moverFichaVisual(4, posiciones[4]);
+            eventos.setText(eventos.getText() + "\n¡La foca ha caído en un hoyo!");
+        }
+        // ...igual para trineo, oso, suelo quebradizo, evento especial...
+    }
+
+    private void jugarAutomatico() {
+        Random rand = new Random();
+        int avance = rand.nextInt(6) + 1; // 1 a 6
+        posiciones[4] += avance;
+        if (posiciones[4] >= 50) posiciones[4] = 49;
+        moverFichaVisual(4, posiciones[4]);
+        eventos.setText(eventos.getText() + "\nEl jugador automático avanza " + avance + " casillas.");
+        // Puedes añadir aquí efectos de hoyos, trineos, etc. si quieres
+    }
+
+    private javafx.scene.Node getFichaByJugador(int idx) {
+        switch (idx) {
+            case 0: return P1;
+            case 1: return P2;
+            case 2: return P3;
+            case 3: return P4;
+            case 4: return Auto; // El jugador automático
+            default: return null;
         }
     }
 }
